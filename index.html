@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html ng-app = "SearchApp">
+	<head>
+		<title>記事サーチアプリ</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.1/angular-material.min.css">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material-data-table/0.10.9/md-data-table.css">
+		<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:400,700'>
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/ng-dialog/0.6.4/css/ngDialog.css">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/ng-dialog/0.6.4/css/ngDialog-theme-default.css">
+		<link rel="stylesheet" type="text/css" href="assets/css/app.css">
+	</head>
+	<body ng-controller = "MainController as main">
+		<md-toolbar layout="row" class="md-toolbar-tools">
+	    	<md-button class="menu md-icon-button" hide-gt-sm ng-click="app.toggleList()" aria-label="Show User List">
+	      	<md-icon md-svg-icon="menu"></md-icon>
+	    	</md-button>
+	    	<h1>記事サーチ</h1>
+	  	</md-toolbar>
+	    
+	    <div class="searchBox" layout="row" layout-align="center center">	    	
+	    	<md-content layout-padding layout="column">
+	    		<md-input-container layout="row" width="100%">
+			      			<md-chips ng-model="main.selectedTopics" md-autocomplete-snap
+						              md-transform-chip="main.transformChip($chip)"
+						              md-require-match="main.autocompleteDemoRequireMatch">						              
+						      <md-autocomplete
+						          md-selected-item="main.selectedItem"
+						          md-search-text="main.searchText"
+						          md-items="item in main.listTopics | filter:main.searchText"
+						          md-item-text="item.name"
+						          placeholder="トピックの選択">
+						        <span md-highlight-text="main.searchText">{{item.name}}</span>
+						      </md-autocomplete>
+						      <md-chip-template>
+						        <span>
+						          <strong>{{$chip.name}}</strong>
+						        </span>
+						      </md-chip-template>
+						    </md-chips>
+				</md-input-container>
+	      		
+		      	<div layout="row">		      	
+		      		<div flex layout="row">
+		      			<md-input-container layout="row" flex-gt-sm>
+			      			<label>記事公開日(From)</label>
+					          <md-datepicker ng-model="main.fromDate" name="dateField" md-min-date="minDate"
+					            md-max-date="maxDate"></md-datepicker>
+					    </md-input-container>
+					    <md-input-container class="md-block" flex-gt-sm>
+				            <label>時</label>
+				            <input ng-model="main.fromHours">
+				        </md-input-container>
+		      		</div>
+		      		<div flex layout="row">
+		      			<md-input-container layout="row" flex-gt-sm>
+			      			<label>記事公開日</label>
+					          <md-datepicker ng-model="main.toDate" name="dateField" md-min-date="minDate"
+					            md-max-date="maxDate"></md-datepicker>
+					    </md-input-container>
+					    <md-input-container class="md-block" flex-gt-sm>
+				            <label>時</label>
+				            <input ng-model="main.toHours">
+				        </md-input-container>
+		      		</div>
+		      	</div>
+
+		      	<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+		        	<md-button class="md-raised md-primary" ng-click="main.doSearch()">検索</md-button>
+		      	</section>
+		      	<md-input-container layout="row" layout-align="center center">
+		      		<md-progress-circular ng-show="main.activateSearch" ng-disabled="!main.activateSearch" class="md-warn md-hue-3" md-diameter="70"></md-progress-circular>
+		      	</md-input-container>
+
+		      	<md-input-container ng-show="main.isSearched">
+		      		<table class="listResulttable">
+					    <thead>
+					      	<tr>
+					        	<th>トピック</th>					        	
+				        		<th colspan="2">内容</th>
+				        		<th>公開日時</th>
+				      		</tr>
+				    	</thead>
+				     	<tbody>
+				     		<tr ng-repeat = "item in main.listResult" ng-show="item.item.score >= 1">
+				       			<td class="displayTopic">{{item.topic}}</td>
+				       			<td class="displayCheckbox">
+				       				<md-input-container>
+
+				       				<md-checkbox ng-checked="main.exists(item, main.chkSelected)"
+				       				aria-label="select item"
+                       				ng-click="main.toggle(item, main.chkSelected)"/>             						                       				
+                       				</md-input-container>
+				       			</td>
+				       			<td class="displayItem">{{item.item.title}}<br/><a href="{{item.item.url}}" target="_blank">{{ main.cutURL(item.item.url) }}</a></td>
+				       			<td class="displayTime">{{item.item.published_at | date:'yyyy-MM-dd HH:mm:ss'}}<br/>{{item.item.score}}</td>
+				     		</tr>
+				   		</tbody>
+				   	</table>
+					<md-input-container layout="row" layout-align="center center">
+				   		<md-button class="md-raised md-primary" ng-click="main.openSelected()">選択した記事の一覧を作成(別ウィンドウで開く)</md-button>
+				   	</md-input-container>
+		      	</md-input-container>
+	    	</md-content>
+	    </div>
+	  	
+	  	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-route.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-aria.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-animate.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.11/angular-filter.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.1/angular-material.min.js"></script>		
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.js"></script>		
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ng-dialog/0.6.4/js/ngDialog.js"></script>
+		<script type="text/javascript" src="services/searchService.js"></script>		
+
+		<script type="text/javascript" src="controllers/seItemCtrl.js"></script>
+		<script type="text/javascript" src="controllers/mainCtrl.js"></script>
+
+		<script type="text/javascript" src="app.js"></script>
+	</body>
+</html>
+<!-- 
+フィンテック
+人工知能
+セキュリティ		 
+・rtyrtyrty           
+-->

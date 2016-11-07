@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html ng-app = "SearchApp">
+	<head>
+		<title>選択した記事</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.1/angular-material.min.css">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material-data-table/0.10.9/md-data-table.css">
+		<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:400,700'>
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/ng-dialog/0.6.4/css/ngDialog.css">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/ng-dialog/0.6.4/css/ngDialog-theme-default.css">
+		<link rel="stylesheet" type="text/css" href="../assets/css/app.css">
+	</head>
+	<body ng-controller="SelectedItemController as item">
+		<md-toolbar layout="row" class="md-toolbar-tools">
+	    	<md-button class="menu md-icon-button" hide-gt-sm ng-click="app.toggleList()" aria-label="Show User List">
+	      	<md-icon md-svg-icon="menu"></md-icon>
+	    	</md-button>	    	
+	  	</md-toolbar>
+
+	  	<div class="listItem" layout="row">
+	    
+	    	<md-list class="selectedItem">
+    		<md-list-item class="md-3-line" ng-repeat="sel in item.chkSelected"> 
+	          <div class="md-list-item-text" layout="column">
+	            <h3> <span>・</span>{{ sel.item.title }}</h3>
+	            <h4><a href="{{ sel.item.url }}" target="_blank">{{ item.cutURL(sel.item.url) }}</h4>		            
+	          </div>
+	          <br/>
+	        </md-list-item>
+		    </md-list>   	
+		
+		</div>
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-route.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-aria.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-animate.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.11/angular-filter.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.1/angular-material.min.js"></script>		
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.js"></script>		
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ng-dialog/0.6.4/js/ngDialog.js"></script>
+		<script type="text/javascript" src="../services/searchService.js"></script>		
+
+		<script type="text/javascript" src="../controllers/seItemCtrl.js"></script>
+		<script type="text/javascript" src="../controllers/mainCtrl.js"></script>
+
+		<script type="text/javascript" src="../app.js"></script>
+	</body>
+	</body>
+</html>
